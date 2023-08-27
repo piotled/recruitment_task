@@ -397,3 +397,4 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 /Task1/Frontend/.vscode
+/Task1/Task1/Migrations

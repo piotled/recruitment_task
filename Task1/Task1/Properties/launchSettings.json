@@ -11,6 +11,7 @@
     "Task1": {
       "commandName": "Project",
       "launchBrowser": true,
+      "launchUrl": "https://localhost:7243/swagger",
       "applicationUrl": "https://localhost:7243;http://localhost:5167",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
