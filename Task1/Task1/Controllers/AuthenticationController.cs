@@ -4,11 +4,16 @@ using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
-using Task1.Authorization;
-using Task1.DTO;
+using RecruitmentTask.Api.DTO;
+using RecruitmentTask.Api.Authorization;
 
+namespace RecruitmentTask.Api.Controllers;
+
+/// <summary>
+/// Klasa odpowiedzialna za operacje zwi¹zane z uzyskiwaniem dostêpu do API
+/// </summary>
 [ApiController]
-[Route("api/[controller]/[action]")]
+[Route("api/[controller]")]
 public class AuthenticationController : ControllerBase 
 {
     readonly UserManager<IdentityUser> userManager;
@@ -20,8 +25,17 @@ public class AuthenticationController : ControllerBase
         this.tokenManager = tokenManager;
     }
 
-    [HttpPost]
-    public async Task<IActionResult> AccessToken(UserDTO userLoginData)
+    /// <summary>
+    /// Pozwala uzyskaæ token umo¿liwiaj¹cy dostêp do chronionych metod API.
+    /// </summary>
+    /// <param name="userLoginData">Dane logowania u¿ytkownika</param>
+    /// <returns>
+    /// Status 200 przy poprawnym zalogowaniu, status 403 gdy u¿ytkonwik jest tymczasowo zablokowany, 
+    /// status 400 gdy podane dane logowania nie s¹ poprawne. 
+    /// W przypadku b³êdu cia³o odpowiedzi zawiera krótki opis przyczyny.
+    /// </returns>
+    [HttpPost("login")]
+    public async Task<IActionResult> GetAccessToken(UserDTO userLoginData)
     {
         if (string.IsNullOrWhiteSpace(userLoginData.Email))
             return BadRequest("Email was not provided");
@@ -48,15 +62,28 @@ public class AuthenticationController : ControllerBase
         return Ok(await tokenManager.CreateToken(user.Id.ToString()));
     }
 
+    /// <summary>
+    /// Metoda pozwala klientom sprawdziæ, czy token jest wa¿ny.
+    /// </summary>
+    /// <returns>Status 200 je¿eli token jest wa¿ny, status 401 w przeciwnym wypadku.</returns>
     [Authorize]
-    [HttpGet]
-    public IActionResult Status()
+    [HttpGet("status")]
+    public IActionResult CheckTokenStatus()
     {
         return Ok();
     }
 
-    [HttpPost]
-    public async Task<IActionResult> Logout()
+    /// <summary>
+    /// Metoda wylogowyj¹ca u¿ytkownika. Token u¿yty do autoryzacji zostanie w bazie oznaczony jako niewa¿ny.
+    /// </summary>
+    /// <remarks>
+    /// Metoda mo¿e zostaæ wywo³ana wiele razy z tym samym tokenem, b¹dŸ bez tokena.
+    /// </remarks>
+    /// <returns>
+    /// Zawsze zwraca kod 200 dla poprawnie wykonanej operacji.
+    /// </returns>
+    [HttpPost("logout")]
+    public async Task<IActionResult> CancelToken()
     {
         var tokenIdClaim = User.Claims.FirstOrDefault(claim => claim.Type == "TokenId");
 

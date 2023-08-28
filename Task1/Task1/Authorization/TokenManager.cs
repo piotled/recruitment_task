@@ -1,11 +1,11 @@
 ﻿using Microsoft.Extensions.Options;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
-using Task1.DataAccess;
+using RecruitmentTask.Api.DataAccess;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Task1.Authorization;
+namespace RecruitmentTask.Api.Authorization;
 
 public class TokenManager : ITokenManager
 {

@@ -1,5 +1,4 @@
-﻿
-namespace Task1.DTO;
+﻿namespace RecruitmentTask.Api.DTO;
 
 public class UserDTO
 {

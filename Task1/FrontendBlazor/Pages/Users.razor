@@ -1,0 +1,47 @@
+﻿@page "/"
+@page "/users"
+
+<PageTitle>Użytkownicy</PageTitle>
+
+<a class="btn btn-primary" href="signin">Zaloguj się</a>
+<a class="btn btn-primary" href="signup">Zarejestruj się</a>
+
+<h1>Użytkownicy</h1>
+
+<p class="">
+    @message
+</p>
+
+@{
+    foreach(var user in users)
+    {
+        <p>@user.Surname @user.Mame</p>
+    }
+}
+
+@code {
+    private string message = string.Empty;
+    private IList<User> users;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Users.GetAll();
+    }
+
+    private void OnClick()
+    {
+
+    }
+
+    private void OnAddToList()
+    {
+        try
+        {
+            Contacts.Add(user);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            Navigatoin.NavigateTo(login);
+        }
+    }   
+}

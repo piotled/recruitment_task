@@ -2,8 +2,13 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using Task1.DTO;
+using RecruitmentTask.Api.DTO;
 
+namespace RecruitmentTask.Api.Controllers;
+
+/// <summary>
+/// Klasa odpowiedzialna za zarządzanie użytkownikami
+/// </summary>
 [ApiController]
 [Route("api/[controller]/[action]")]
 public class UsersController : ControllerBase
@@ -15,6 +20,15 @@ public class UsersController : ControllerBase
         this.userManager = userManager;
     }
 
+    /// <summary>
+    /// Tworzy nowe konto użytkownika.
+    /// </summary>
+    /// <param name="userRegistrationData">Dane logowania użytkownika</param>
+    /// <returns>
+    /// Status 200 jeżeli użytkownik został utworzony poprawnie, 
+    /// status 400 gdy dane nie pozwalają na utworzenie użytkownika.
+    /// W przypadku błędu ciało odpowiedzi zawiera krótki opis przyczyny.
+    /// </returns>
     [HttpPost]
     public async Task<IActionResult> Create(UserDTO userRegistrationData)
     {

@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Task1.Authorization;
-using Task1.DataAccess;
+using RecruitmentTask.Api.Authorization;
+using RecruitmentTask.Api.DataAccess;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,7 +22,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddIdentityCore<User>(identityOptions =>
+builder.Services.AddIdentityCore<IdentityUser>(identityOptions =>
 {
     identityOptions.User = new UserOptions()
     {

@@ -1,4 +1,4 @@
-﻿namespace Task1.DataAccess;
+﻿namespace RecruitmentTask.Api.DataAccess;
 
 public class IssuedToken
 {

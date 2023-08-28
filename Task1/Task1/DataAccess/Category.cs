@@ -1,8 +1,8 @@
-﻿namespace Task1.DataAccess;
+﻿namespace RecruitmentTask.Api.DataAccess;
 
 public class Category
 {
     public int Id { get; set; }
-    public int Name { get; set; }
-    public ICollection<Category> Subcategories { get; set; } = null!;
+    public string Name { get; set; } = null!;
+    public ICollection<Subcategory> Subcategories { get; set; } = null!;
 }

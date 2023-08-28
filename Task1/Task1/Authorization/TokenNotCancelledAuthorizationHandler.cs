@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Task1.DataAccess;
+using RecruitmentTask.Api.DataAccess;
 
-namespace Task1.Authorization;
+namespace RecruitmentTask.Api.Authorization;
 
+/// <summary>
+/// Klasa sprawdzająca, czy użyty do uwierzytelnienia token nie został unieważniony
+/// </summary>
 public class TokenNotCancelledAuthorizationHandler : IAuthorizationHandler, IAuthorizationRequirement
 {
     private readonly AppDbContext dbContext;

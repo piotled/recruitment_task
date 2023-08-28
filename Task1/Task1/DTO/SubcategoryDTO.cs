@@ -1,6 +1,6 @@
-﻿namespace RecruitmentTask.Api.DataAccess;
+﻿namespace RecruitmentTask.Api.DTO;
 
-public class Subcategory
+public class SubcategoryDTO
 {
     public int Id { get; set; }
     public string Name { get; set; } = null!;
