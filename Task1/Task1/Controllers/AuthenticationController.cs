@@ -12,9 +12,9 @@ using Task1.DTO;
 public class AuthenticationController : ControllerBase 
 {
     readonly UserManager<IdentityUser> userManager;
-    readonly TokenManager tokenManager;
+    readonly ITokenManager tokenManager;
 
-    public AuthenticationController(UserManager<IdentityUser> userManager, TokenManager tokenManager)
+    public AuthenticationController(UserManager<IdentityUser> userManager, ITokenManager tokenManager)
     {
         this.userManager = userManager;
         this.tokenManager = tokenManager;

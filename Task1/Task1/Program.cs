@@ -22,7 +22,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddIdentityCore<IdentityUser>(identityOptions =>
+builder.Services.AddIdentityCore<User>(identityOptions =>
 {
     identityOptions.User = new UserOptions()
     {
@@ -64,7 +64,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     };
 });
 builder.Services.Configure<JwtTokenOptions>(tokenOptionsSection);
-builder.Services.AddScoped<TokenManager>();
+builder.Services.AddScoped<ITokenManager, TokenManager>();
 builder.Services.AddScoped<IAuthorizationHandler, TokenNotCancelledAuthorizationHandler>();
 
 var app = builder.Build();

@@ -7,7 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Task1.Authorization;
 
-public class TokenManager
+public class TokenManager : ITokenManager
 {
     readonly JwtTokenOptions tokenOptions;
     readonly AppDbContext dbContext;
