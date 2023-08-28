@@ -12,7 +12,7 @@ namespace RecruitmentTask.Api.Controllers;
 /// Klasa pozwalająca na wykonywanie operacji CRUD na kontaktach
 /// </summary>
 [Route("api/[controller]")]
-//[Authorize]
+[Authorize]
 [ApiController]
 public class ContactsController : ControllerBase
 {
@@ -23,6 +23,7 @@ public class ContactsController : ControllerBase
         this.dbContext = dbContext;
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public IEnumerable<ContactDTO> GetAllContacts()
     {
