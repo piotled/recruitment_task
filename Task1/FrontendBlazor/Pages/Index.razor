@@ -1,0 +1,63 @@
+﻿@page "/"
+@page "/login"
+@using System.Text;
+@using FrontendBlazor.Validation;
+@inject Authentication.AuthenticationService authService
+@inject HttpClient http
+@inject NavigationManager navigation
+
+<PageTitle>Logowanie</PageTitle>
+
+<h1>Logowanie</h1>
+
+<p>Podaj swój email i hasło aby się zalogować</p>
+
+<EditForm Model="@model" OnValidSubmit="@Submit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <p>
+        Email:
+        <InputText @bind-Value="@model.Email" />
+    </p>
+    <p>
+        Hasło:
+        <InputText type="password" @bind-Value="@model.Password" />
+    </p>
+    <button class="btn btn-primary" type="submit">Zaloguj</button> 
+</EditForm>
+
+<p class="alert alert-danger @CollapseAlert">
+    @errorMessage
+</p>
+
+<a class="btn btn-primary" href="/signup">Załóż konto</a>
+
+@code {
+    private LoginData model = new();
+    private string errorMessage = string.Empty;
+    private string CollapseAlert => errorMessage == string.Empty ? "collapse" : "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (await authService.IsAuthenticated())
+            navigation.NavigateTo("contacts");
+    }
+
+    private async Task Submit()
+    {
+        if (await authService.Authenticate(model.Email, model.Password))
+            navigation.NavigateTo("contacts");
+        else
+            errorMessage = "Niepoprawne dane logowania";
+    }
+
+    private class LoginData
+    {
+        [Required(ErrorMessage = "Email nie może być pusty")]
+        [EmailAddress(ErrorMessage = "Format adresu email jest nieprawidłowy")]
+        public string Email { get; set; } = string.Empty;
+        
+        [Password]
+        public string Password { get; set; } = string.Empty;
+    }
+}

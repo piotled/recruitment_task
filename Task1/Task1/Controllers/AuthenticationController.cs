@@ -45,7 +45,14 @@ public class AuthenticationController : ControllerBase
 
         await userManager.ResetAccessFailedCountAsync(user);
 
-        return Ok(new { AccessToken = await tokenManager.CreateToken(user.Id.ToString()) });
+        return Ok(await tokenManager.CreateToken(user.Id.ToString()));
+    }
+
+    [Authorize]
+    [HttpGet]
+    public IActionResult Status()
+    {
+        return Ok();
     }
 
     [HttpPost]

@@ -9,6 +9,16 @@ using Task1.DataAccess;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin();
+        policy.AllowAnyHeader();
+        policy.AllowAnyMethod();
+    });
+});
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -29,7 +39,7 @@ builder.Services.AddIdentityCore<IdentityUser>(identityOptions =>
         RequireUppercase = false,
         RequireNonAlphanumeric = false,
     }
-    : new PasswordOptions() { RequiredLength = 8 };
+    : new PasswordOptions() { RequiredLength = 8, RequiredUniqueChars = 0 };
 }).AddEntityFrameworkStores<AppDbContext>();
 
 builder.Services.AddControllers();
@@ -72,6 +82,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
+app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

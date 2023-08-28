@@ -1,0 +1,69 @@
+﻿@page "/signup"
+@using System.Text;
+@using FrontendBlazor.Validation;
+@inject Authentication.AuthenticationService authService
+@inject Model.UsersRepository usersRepo
+@inject NavigationManager navigation
+
+<PageTitle>Rejestracja</PageTitle>
+
+<h1>Rejestracja</h1>
+
+<p>Zarejestruj się podając email i hasło</p>
+
+<EditForm Model="@model" OnValidSubmit="@Submit">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+    <p>
+        Email:
+        <InputText @bind-Value="@model.Email" />
+    </p>
+    <p>
+        Hasło:
+        <InputText type="password" @bind-Value="@model.Password" />
+    </p>
+    <p>
+        Powtórz hasło:
+        <InputText type="password" @bind-Value="@model.PasswordConfirmation" />
+    </p>
+    <button class="btn btn-primary" type="submit">Zarejestruj</button>
+</EditForm>
+
+<p class="alert alert-danger @CollapseAlert">
+    @errorMessage
+</p>
+
+<a class="btn btn-primary" href="/">Masz już konto? Zaloguj się</a>
+
+@code {
+    private RegistrationData model = new();
+    private string errorMessage = string.Empty;
+    private string CollapseAlert => errorMessage == string.Empty ? "collapse" : "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (await authService.IsAuthenticated())
+            navigation.NavigateTo("contacts");
+    }
+
+    private async Task Submit()
+    {
+        if (await usersRepo.Create(model.Email, model.Password))
+            navigation.NavigateTo("/");
+        else
+            errorMessage = "Nie można założyć konta dla podanych danych";
+    }
+
+    private class RegistrationData {
+        [Required(ErrorMessage = "Email nie może być pusty")]
+        [EmailAddress(ErrorMessage = "Format adresu email jest nieprawidłowy")]
+        public string Email { get; set; } = string.Empty;
+        
+        [Password]
+        public string Password { get; set; } = string.Empty;
+        
+        [Password]
+        [Compare("Password", ErrorMessage = "Hasła muszą być takie same")]
+        public string PasswordConfirmation { get; set; } = string.Empty;
+    }
+}
