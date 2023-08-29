@@ -10,6 +10,7 @@
 @if (isAuthenticated)
 {
     <button class="btn btn-primary" @onclick="@Logout">Wyloguj</button>
+    <a class="btn btn-primary" href="add">Dodaj kontakt</a>
 }
 else
 {
@@ -32,7 +33,19 @@ else
     {
         foreach (var contact in contacts)
         {
-            <p>@contact.Name @contact.Surname</p>
+            <div class="row">
+                @if (isAuthenticated)
+                {
+                    <button class="btn btn-primary col-1" @onclick=@(() => Delete(contact.Id))>
+                        Usuń kontakt
+                    </button>
+                }
+                <p class="col-11">
+                    <a href="details/@contact.Id">
+                        @contact.Name @contact.Surname
+                    </a>
+                </p>
+            </div>
         }
     }
 }
@@ -47,6 +60,14 @@ else
     {
         isAuthenticated = await authService.IsAuthenticated();
         contacts = await contactsDao.GetAll();
+    }
+
+    private async Task Delete(int contactId)
+    {
+        if(await contactsDao.Delete(contactId))
+        {
+            contacts.Remove(contacts.First(c => c.Id == contactId));
+        }
     }
 
     private async Task Logout()

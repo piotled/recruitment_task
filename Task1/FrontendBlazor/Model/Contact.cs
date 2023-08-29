@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using FrontendBlazor.Validation;
+using System.ComponentModel.DataAnnotations;
 
 namespace FrontendBlazor.Model;
 
@@ -14,10 +15,13 @@ public class Contact
 
     public string Phone { get; set; } = string.Empty;
 
-    [EmailAddress]
-    public string Email { get; set; } = string.Empty;
+    private string? email = null;
 
-    public DateTime DateOfBirth { get; set; }
+    [EmailAddress]
+    public string? Email { get => email; set => email = value == string.Empty ? null : value; }
+
+    [BirthDate(ErrorMessage = "Data urodzenia musi być później niż 1900-01-01")]
+    public DateTime DateOfBirth { get; set; } = DateTime.Now.Date;
 
     public int CategoryId { get; set; }
     

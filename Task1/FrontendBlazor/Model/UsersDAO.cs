@@ -2,11 +2,11 @@
 
 namespace FrontendBlazor.Model;
 
-public class UsersRepository
+public class UsersDAO
 {
     private readonly HttpClient httpClient;
 
-    public UsersRepository(IHttpClientFactory httpClientFactory)
+    public UsersDAO(IHttpClientFactory httpClientFactory)
     {
         this.httpClient = httpClientFactory.CreateClient("RestApi");
     }

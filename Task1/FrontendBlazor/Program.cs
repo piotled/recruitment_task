@@ -10,7 +10,7 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddHttpClient("RestApi", client => client.BaseAddress = new Uri("https://localhost:7243"));
 builder.Services.AddSingleton<ITokenStorage, TokenStorage>();
-builder.Services.AddSingleton<UsersRepository>();
+builder.Services.AddSingleton<UsersDAO>();
 builder.Services.AddSingleton<CategoriesDAO>();
 builder.Services.AddSingleton<ContactsDAO>();
 builder.Services.AddSingleton<AuthenticationService>();

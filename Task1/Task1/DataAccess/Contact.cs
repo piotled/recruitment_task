@@ -5,8 +5,8 @@ public class Contact
     public int Id { get; set; }
     public string Name { get; set; } = null!;
     public string Surname { get; set; } = null!;
-    public string Email { get; set; } = null!;
-    public string Phone { get; set; } = null!;
+    public string? Email { get; set; }
+    public string? Phone { get; set; }
     public DateTime DateOfBirth { get; set; }
     public int CategoryId { get; set; }
     public Category Category { get; set; } = null!;

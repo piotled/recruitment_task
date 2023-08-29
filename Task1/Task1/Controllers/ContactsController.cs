@@ -52,7 +52,7 @@ public class ContactsController : ControllerBase
         dbContext.Update(contactToCreate);
         await dbContext.SaveChangesAsync();
         
-        return Ok();
+        return Ok(contactToCreate.Id);
     }
 
     [HttpPost("{id:int}")]
@@ -77,6 +77,14 @@ public class ContactsController : ControllerBase
             return NotFound();
         
         dbContext.Remove(contactToRemove);
+
+        const int categoryOtherId = 1;
+        if (contactToRemove.CategoryId == categoryOtherId)
+        {
+            var otherCategoryToRemove = dbContext.Subcategories.First(sc => sc.Id == categoryOtherId);
+            dbContext.Remove(otherCategoryToRemove);
+        }
+
         await dbContext.SaveChangesAsync();
 
         return Ok();
@@ -139,7 +147,7 @@ public class ContactsController : ControllerBase
             Id = contact.Id,
             CategoryId = contact.CategoryId,
             SubcategoryId = contact.SubcategoryId,
-            DateOfBirth = contact.DateOfBirth,
+            DateOfBirth = DateTime.SpecifyKind(contact.DateOfBirth, DateTimeKind.Utc),
             Email = contact.Email,
             Name = contact.Name,
             Surname = contact.Surname,

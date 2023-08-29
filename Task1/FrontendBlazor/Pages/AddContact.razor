@@ -1,0 +1,133 @@
+﻿@page "/add"
+@using System.Text;
+@using FrontendBlazor.Model;
+@using FrontendBlazor.Validation;
+@inject Authentication.AuthenticationService authService
+@inject Model.ContactsDAO contactsDao
+@inject Model.CategoriesDAO categoriesDao
+@inject NavigationManager navigation
+
+<PageTitle>Tworzenie kontaktu</PageTitle>
+
+<h1>Tworzenie kontaktu</h1>
+
+<EditForm Model="@model" OnValidSubmit="@Submit">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+    <p>
+        Imię:
+        <InputText @bind-Value="@model.Name" />
+    </p>
+    <p>
+        Nazwisko:
+        <InputText @bind-Value="@model.Surname" />
+    </p>
+    <p>
+        Email:
+        <InputText @bind-Value="@model.Email" />
+    </p>
+    <p>
+        Numer telefonu:
+        <InputText @bind-Value="@model.Phone" />
+    </p>
+    <p>
+        Data urodzenia:
+        <InputDate @bind-Value="@model.DateOfBirth" />
+    </p>
+    <p>
+        Kategoria
+        <InputSelect @bind-Value="@model.CategoryId">
+            @foreach(var category in categories)
+            {
+                <option value="@category.Id">@category.Name</option>
+            }
+        </InputSelect>
+    </p>
+    @if(categories.Count > 0)
+    {
+        <p>
+            Podkategoria
+            @if (model.CategoryId == categoryOtherId)
+            {
+                <InputText @bind-Value=@otherCategoryName/>
+            }
+            else
+            {
+                var selectedCategory = categories.FirstOrDefault(c => c.Id == model.CategoryId);
+                if(selectedCategory != null)
+                {
+                    <InputSelect @bind-Value="@model.SubcategoryId">
+                        @for(int i = 0; i < selectedCategory.Subcategories.Count; i++)
+                        {
+                            <option selected="@(i == 0 ? "selected" : "")" value="@selectedCategory.Subcategories[i].Id">
+                                @selectedCategory.Subcategories[i].Name
+                            </option>
+                        }
+                    </InputSelect>
+                }
+            }
+        </p>
+    }
+
+    <button class="btn btn-primary" type="submit">Utwórz</button>
+</EditForm>
+
+<p class="alert alert-danger @CollapseAlertClass">
+    @errorMessage
+</p>
+
+@code {
+    const int categoryOtherId = 1;
+
+    private Contact model = new();
+    private string errorMessage = string.Empty;
+    private string otherCategoryName = string.Empty;
+    private List<Category> categories = new();
+
+    private string CollapseAlertClass => errorMessage == string.Empty ? "collapse" : "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!await authService.IsAuthenticated())
+            navigation.NavigateTo("/");
+
+        categories = await categoriesDao.GetAll();
+        if (categories.Count == 0)
+            errorMessage = "Błąd połączenia z serwerem";
+
+        model.CategoryId = categoryOtherId;
+    }
+
+    private async Task Submit()
+    {
+        if(model.CategoryId == categoryOtherId)
+        {
+            if (string.IsNullOrWhiteSpace(otherCategoryName))
+            {
+                errorMessage = "Podaj nazwę kategorii";
+                return;
+            }
+            else
+            {
+                int newSubcategoryId = await categoriesDao.AddOtherCategory(otherCategoryName);
+                if (newSubcategoryId == 0)
+                {
+                    errorMessage = "Błąd połączenia z serwerem";
+                    return;
+                }
+                else
+                    model.SubcategoryId = newSubcategoryId;
+            }
+        }   
+        else if (model.SubcategoryId == 0)
+        {
+            errorMessage = "Podkategoria musi być wybrana";
+            return;
+        }
+        
+        if (await contactsDao.Create(model))
+            navigation.NavigateTo("/");
+        else
+            errorMessage = "Adres email musi być unikalny"; //TODO error here will cause "Ohter" subcategory to be created and not used
+    }
+}
