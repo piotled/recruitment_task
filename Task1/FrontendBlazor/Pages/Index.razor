@@ -42,9 +42,16 @@ else
                     </button>
                 }
                 <p class="col-11">
-                    <a href="details/@contact.Id">
+                    @if (isAuthenticated)
+                    {
+                        <a href="details/@contact.Id">
+                            @contact.Name @contact.Surname
+                        </a>
+                    }
+                    else
+                    {
                         @contact.Name @contact.Surname
-                    </a>
+                    }
                 </p>
             </div>
         }

@@ -1,0 +1,87 @@
+﻿@page "/details/{id:int}"
+@using System.Text;
+@using FrontendBlazor.Model;
+@using FrontendBlazor.Validation;
+@using FrontendBlazor.Authentication;
+@inject IAuthenticationService authService
+@inject IContactsDAO contactsDao
+@inject ICategoriesDAO categoriesDao
+@inject NavigationManager navigation
+
+<PageTitle>Szczegóły kontaktu</PageTitle>
+
+<h1>Szczegóły kontaktu</h1>
+
+@if(contact != null)
+{
+
+    <p>
+        Imię: @contact.Name
+    </p>
+    <p>
+        Nazwisko: @contact.Surname
+    </p>
+    <p>
+        Email: @contact.Email
+    </p>
+    <p>
+        Telefon: @contact.Phone
+    </p>
+    <p>
+        Data urodzenia: @contact.DateOfBirth
+    </p>
+    <p>
+        @{
+            var category = categories.First(c => c.Id == contact.CategoryId);
+            var subcategory = category.Subcategories.First(sc => sc.Id == contact.SubcategoryId);
+        }
+        Kategoria: 
+
+        @if (category.Id == categoryOtherId)
+        {
+            @subcategory.Name
+        }
+        else
+        {
+            @category.Name
+            <p> 
+                Podkategoria:
+                @subcategory.Name
+            </p>
+        }
+    </p>
+}
+
+<p class="alert alert-danger @CollapseAlertClass">
+    @errorMessage
+</p>
+
+<a href="/">Strona główna</a>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    const int categoryOtherId = 1;
+
+    private Contact? contact;
+    private string errorMessage = string.Empty;
+    private List<Category> categories = new();
+
+    private string CollapseAlertClass => errorMessage == string.Empty ? "collapse" : "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!await authService.IsAuthenticated())
+            navigation.NavigateTo("/");
+        
+        contact = await contactsDao.Get(Id);
+
+        if(contact == null)
+            navigation.NavigateTo("/");
+
+        categories = await categoriesDao.GetAll();
+        if (categories.Count == 0)
+            errorMessage = "Błąd połączenia z serwerem";
+    }
+}

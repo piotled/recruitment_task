@@ -16,8 +16,29 @@ public class ContactsDAO : IContactsDAO
 
     public async Task<List<Contact>> GetAll()
     {
-        var response = await httpClient.GetFromJsonAsync<List<Contact>>("api/contacts");
-        return response ?? new List<Contact>();
+        try
+        {
+            return await httpClient.GetFromJsonAsync<List<Contact>>("api/contacts") ?? new();
+        }
+        catch
+        {
+            return new();
+        }
+    }
+
+    public async Task<Contact?> Get(int id)
+    {
+        try
+        {
+            string currentToken = await tokenStorage.GetToken();
+            httpClient.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", currentToken);
+            return await httpClient.GetFromJsonAsync<Contact>($"api/contacts/{id}");
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     public async Task<bool> Create(Contact contact)
@@ -25,8 +46,15 @@ public class ContactsDAO : IContactsDAO
         string currentToken = await tokenStorage.GetToken();
         httpClient.DefaultRequestHeaders.Authorization =
             new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", currentToken);
-        var response = await httpClient.PostAsJsonAsync("api/contacts", contact);
-        return response.IsSuccessStatusCode;
+        try
+        {
+            var response = await httpClient.PostAsJsonAsync("api/contacts", contact);
+            return response.IsSuccessStatusCode;
+        }
+        catch 
+        {
+            return false; 
+        }
     }
 
     public async Task<bool> Delete(int contactId)
