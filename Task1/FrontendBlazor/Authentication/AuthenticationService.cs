@@ -16,7 +16,7 @@ public class AuthenticationService
 
     public async Task<bool> Authenticate(string email, string password)
     {
-        var response = await httpClient.PostAsync("api/authentication/accesstoken", 
+        var response = await httpClient.PostAsync("api/authentication/login", 
             JsonContent.Create(new { email, password }));
         
         if (response.IsSuccessStatusCode)

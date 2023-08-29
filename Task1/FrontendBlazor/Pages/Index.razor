@@ -1,63 +1,57 @@
 ﻿@page "/"
-@page "/login"
-@using System.Text;
-@using FrontendBlazor.Validation;
+@page "/contacts"
+@using FrontendBlazor.Model;
 @inject Authentication.AuthenticationService authService
-@inject HttpClient http
+@inject Model.ContactsDAO contactsDao
 @inject NavigationManager navigation
 
-<PageTitle>Logowanie</PageTitle>
+<PageTitle>Kontakty</PageTitle>
 
-<h1>Logowanie</h1>
+@if (isAuthenticated)
+{
+    <button class="btn btn-primary" @onclick="@Logout">Wyloguj</button>
+}
+else
+{
+    <a class="btn btn-primary" href="login">Zaloguj się</a>
+    <a class="btn btn-primary" href="signup">Zarejestruj się</a>    
+}
 
-<p>Podaj swój email i hasło aby się zalogować</p>
+<h1>Kontakty</h1>
 
-<EditForm Model="@model" OnValidSubmit="@Submit">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-    <p>
-        Email:
-        <InputText @bind-Value="@model.Email" />
-    </p>
-    <p>
-        Hasło:
-        <InputText type="password" @bind-Value="@model.Password" />
-    </p>
-    <button class="btn btn-primary" type="submit">Zaloguj</button> 
-</EditForm>
-
-<p class="alert alert-danger @CollapseAlert">
-    @errorMessage
+<p class="">
+    @message
 </p>
 
-<a class="btn btn-primary" href="/signup">Załóż konto</a>
+@{
+    if(contacts.Count == 0)
+    {
+        <p>Brak kontaktów</p>
+    }
+    else
+    {
+        foreach (var contact in contacts)
+        {
+            <p>@contact.Name @contact.Surname</p>
+        }
+    }
+}
 
 @code {
-    private LoginData model = new();
-    private string errorMessage = string.Empty;
-    private string CollapseAlert => errorMessage == string.Empty ? "collapse" : "";
+    private string message = string.Empty;
+    private List<Contact> contacts = new();
+
+    private bool isAuthenticated = false;
 
     protected override async Task OnInitializedAsync()
     {
-        if (await authService.IsAuthenticated())
-            navigation.NavigateTo("contacts");
+        isAuthenticated = await authService.IsAuthenticated();
+        contacts = await contactsDao.GetAll();
     }
 
-    private async Task Submit()
+    private async Task Logout()
     {
-        if (await authService.Authenticate(model.Email, model.Password))
-            navigation.NavigateTo("contacts");
-        else
-            errorMessage = "Niepoprawne dane logowania";
-    }
-
-    private class LoginData
-    {
-        [Required(ErrorMessage = "Email nie może być pusty")]
-        [EmailAddress(ErrorMessage = "Format adresu email jest nieprawidłowy")]
-        public string Email { get; set; } = string.Empty;
-        
-        [Password]
-        public string Password { get; set; } = string.Empty;
+        if (await authService.Logout())
+            isAuthenticated = false;
     }
 }

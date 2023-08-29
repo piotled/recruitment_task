@@ -19,6 +19,6 @@ public class TokenStorage : ITokenStorage
 
     public async Task StoreToken(string token)
     {
-        await jsRuntime.InvokeVoidAsync("localStorage.getItem", "token", token);
+        await jsRuntime.InvokeVoidAsync("localStorage.setItem", "token", token);
     }
 }
