@@ -22,6 +22,7 @@ public class ContactsDAO : IContactsDAO
         }
         catch
         {
+            Console.WriteLine("Error in communication with server");
             return new();
         }
     }
@@ -37,6 +38,7 @@ public class ContactsDAO : IContactsDAO
         }
         catch
         {
+            Console.WriteLine("Error in communication with server");
             return null;
         }
     }
@@ -53,7 +55,25 @@ public class ContactsDAO : IContactsDAO
         }
         catch 
         {
+            Console.WriteLine("Error in communication with server");
             return false; 
+        }
+    }
+
+    public async Task<bool> Update(Contact contact)
+    {
+        string currentToken = await tokenStorage.GetToken();
+        httpClient.DefaultRequestHeaders.Authorization =
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", currentToken);
+        try
+        {
+            var response = await httpClient.PostAsJsonAsync($"api/contacts/{contact.Id}", contact);
+            return response.IsSuccessStatusCode;
+        }
+        catch
+        {
+            Console.WriteLine("Error in communication with server");
+            return false;
         }
     }
 
@@ -62,7 +82,15 @@ public class ContactsDAO : IContactsDAO
         string currentToken = await tokenStorage.GetToken();
         httpClient.DefaultRequestHeaders.Authorization =
             new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", currentToken);
-        var response = await httpClient.DeleteAsync($"api/contacts/{contactId}");
-        return response.IsSuccessStatusCode;
+        try
+        {
+            var response = await httpClient.DeleteAsync($"api/contacts/{contactId}");
+            return response.IsSuccessStatusCode;
+        }
+        catch
+        {
+            Console.WriteLine("Error in communication with server");
+            return false;
+        }
     }
 }

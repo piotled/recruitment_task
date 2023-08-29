@@ -1,0 +1,152 @@
+﻿@page "/edit/{id:int}"
+@using System.Text;
+@using FrontendBlazor.Model;
+@using FrontendBlazor.Validation;
+@using FrontendBlazor.Authentication;
+@inject IAuthenticationService authService
+@inject IContactsDAO contactsDao
+@inject ICategoriesDAO categoriesDao
+@inject NavigationManager navigation
+
+<PageTitle>Edycja kontaktu</PageTitle>
+
+<h1>Edycja kontaktu</h1>
+
+@if(model != null)
+{
+    <EditForm Model="@model" OnValidSubmit="@Submit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <p>
+            Imię:
+            <InputText @bind-Value="@model.Name" />
+        </p>
+        <p>
+            Nazwisko:
+            <InputText @bind-Value="@model.Surname" />
+        </p>
+        <p>
+            Email:
+            <InputText @bind-Value="@model.Email" />
+        </p>
+        <p>
+            Numer telefonu:
+            <InputText @bind-Value="@model.Phone" />
+        </p>
+        <p>
+            Data urodzenia:
+            <InputDate @bind-Value="@model.DateOfBirth" />
+        </p>
+        <p>
+            Kategoria
+            <InputSelect @bind-Value="@model.CategoryId">
+                @foreach (var category in categories)
+                {
+                    <option value="@category.Id">@category.Name</option>
+                }
+            </InputSelect>
+        </p>
+        @if (categories.Count > 0)
+        {
+            <p>
+                Podkategoria
+                @if (model.CategoryId == categoryOtherId)
+                {
+                    <InputText @bind-Value=@otherCategoryName />
+                }
+                else
+                {
+                    var selectedCategory = categories.FirstOrDefault(c => c.Id == model.CategoryId);
+                    if (selectedCategory != null)
+                    {
+                        <InputSelect @bind-Value="@model.SubcategoryId">
+                            @for (int i = 0; i < selectedCategory.Subcategories.Count; i++)
+                            {
+                                <option value="@selectedCategory.Subcategories[i].Id">
+                                    @selectedCategory.Subcategories[i].Name
+                                </option>
+                            }
+                        </InputSelect>
+                    }
+                }
+            </p>
+        }
+
+        <button class="btn btn-primary" type="submit">Zapisz</button>
+    </EditForm>
+}
+
+<p class="alert alert-danger @CollapseAlertClass">
+    @errorMessage
+</p>
+
+<a href="/">Strona główna</a>
+
+@code {
+    const int categoryOtherId = 1;
+
+    [Parameter]
+    public int Id { get; set; }
+
+    private Contact? model = null;
+    private string errorMessage = string.Empty;
+    private string otherCategoryName = string.Empty;
+    private string initialOtherCategoryName = string.Empty;
+    private List<Category> categories = new();
+
+    private string CollapseAlertClass => errorMessage == string.Empty ? "collapse" : "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!await authService.IsAuthenticated())
+            navigation.NavigateTo("/");
+
+        model = await contactsDao.Get(Id);
+        if(model is null)
+            errorMessage = "Błąd połączenia z serwerem";
+
+        categories = await categoriesDao.GetAll();
+        if (categories.Count == 0)
+            errorMessage = "Błąd połączenia z serwerem";
+
+        if (model!.CategoryId == categoryOtherId)
+        {
+            initialOtherCategoryName = otherCategoryName = categories
+            .First(c => c.Id == categoryOtherId).Subcategories
+            .First(sc => sc.Id == model.SubcategoryId).Name;
+        }
+    }
+
+    private async Task Submit()
+    {
+        if(model!.CategoryId == categoryOtherId)
+        {
+            if (string.IsNullOrWhiteSpace(otherCategoryName))
+            {
+                errorMessage = "Podaj nazwę kategorii";
+                return;
+            }
+            else if(initialOtherCategoryName != otherCategoryName)
+            {
+                int newSubcategoryId = await categoriesDao.AddOtherCategory(otherCategoryName);
+                if (newSubcategoryId == 0)
+                {
+                    errorMessage = "Błąd połączenia z serwerem";
+                    return;
+                }
+                else
+                    model.SubcategoryId = newSubcategoryId;
+            }
+        }   
+        else if (model.SubcategoryId == 0)
+        {
+            errorMessage = "Podkategoria musi być wybrana";
+            return;
+        }
+        
+        if (await contactsDao.Update(model))
+            navigation.NavigateTo($"/details/{model.Id}");
+        else
+            errorMessage = "Adres email musi być unikalny";
+    }
+}

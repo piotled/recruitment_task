@@ -38,9 +38,11 @@ public class CategoriesDAO : ICategoriesDAO
 
             return categories ?? new();
         }
-        catch { }
-
-        return new();
+        catch 
+        {
+            Console.WriteLine("Error in communication with server");
+            return new();
+        }
     }
 
     public async Task<int> AddOtherCategory(string categoryName)
@@ -61,6 +63,7 @@ public class CategoriesDAO : ICategoriesDAO
         }
         catch
         {
+            Console.WriteLine("Error in communication with server");
             return 0;
         }
     }

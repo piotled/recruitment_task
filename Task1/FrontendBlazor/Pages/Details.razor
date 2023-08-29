@@ -28,7 +28,7 @@
         Telefon: @contact.Phone
     </p>
     <p>
-        Data urodzenia: @contact.DateOfBirth
+        Data urodzenia: @contact.DateOfBirth.ToString("d")
     </p>
     <p>
         @{
@@ -50,19 +50,22 @@
             </p>
         }
     </p>
+
+    <a class="btn btn-primary" href="/edit/@contact.Id">Edytuj</a>
 }
 
 <p class="alert alert-danger @CollapseAlertClass">
     @errorMessage
 </p>
 
+<br />
 <a href="/">Strona główna</a>
 
 @code {
+    const int categoryOtherId = 1;
+
     [Parameter]
     public int Id { get; set; }
-
-    const int categoryOtherId = 1;
 
     private Contact? contact;
     private string errorMessage = string.Empty;

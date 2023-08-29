@@ -8,6 +8,11 @@
 
 <PageTitle>Kontakty</PageTitle>
 
+@if (!isLoaded)
+{
+    <h1>Ładowanie...</h1>
+}
+
 @if (isAuthenticated)
 {
     <button class="btn btn-primary" @onclick="@Logout">Wyloguj</button>
@@ -61,13 +66,14 @@ else
 @code {
     private string message = string.Empty;
     private List<Contact> contacts = new();
-
     private bool isAuthenticated = false;
+    private bool isLoaded = false;
 
     protected override async Task OnInitializedAsync()
     {
         isAuthenticated = await authService.IsAuthenticated();
         contacts = await contactsDao.GetAll();
+        isLoaded = true;
     }
 
     private async Task Delete(int contactId)

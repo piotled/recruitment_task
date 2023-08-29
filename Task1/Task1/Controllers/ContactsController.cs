@@ -79,8 +79,11 @@ public class ContactsController : ControllerBase
     /// Status 200 w przypadku sukcesu, status 400 jeżeli email nie jest unikalny bądź identyfikatory kategorii są nieprawidłowe.
     /// </returns>
     [HttpPost("{id:int}")]
-    public async Task<IActionResult> EditContact(ContactDTO contactDto)
+    public async Task<IActionResult> EditContact(int id, ContactDTO contactDto)
     {
+        if(id != contactDto.Id)
+            return BadRequest();
+
         var contactToChange = MapDTOToContact(contactDto);
 
         if (!await IsValidForChange(contactToChange))
@@ -111,7 +114,7 @@ public class ContactsController : ControllerBase
         const int categoryOtherId = 1;
         if (contactToRemove.CategoryId == categoryOtherId)
         {
-            var otherCategoryToRemove = dbContext.Subcategories.First(sc => sc.Id == categoryOtherId);
+            var otherCategoryToRemove = dbContext.Subcategories.First(sc => sc.CategoryId == categoryOtherId);
             dbContext.Remove(otherCategoryToRemove);
         }
 
