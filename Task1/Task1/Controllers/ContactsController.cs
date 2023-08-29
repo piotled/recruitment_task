@@ -23,6 +23,9 @@ public class ContactsController : ControllerBase
         this.dbContext = dbContext;
     }
 
+    /// <summary>
+    /// Zwraza listę wszysktich kontaktów
+    /// </summary>
     [AllowAnonymous]
     [HttpGet]
     public IEnumerable<ContactDTO> GetAllContacts()
@@ -30,6 +33,11 @@ public class ContactsController : ControllerBase
         return dbContext.Contacts.Select(c => MapContactToDTO(c));
     }
 
+    /// <summary>
+    /// Zwrace dane kontaktu o podanym identyfikatorze
+    /// </summary>
+    /// <param name="id">Identyfikator kontatku do znalezienia</param>
+    /// <returns>Status 200 w przypadku sukcesu, status 404 jeżeli nie znaleziono kontaktu</returns>
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetContactById(int id)
     {
@@ -41,6 +49,14 @@ public class ContactsController : ControllerBase
         return Ok(MapContactToDTO(foundContact));
     }
 
+    /// <summary>
+    /// Tworzy kontakt wykorzysując otrzymane dane.
+    /// </summary>
+    /// <param name="contactDto">Dane kontaktu do dodania</param>
+    /// <returns>
+    /// Status 200 w przypadku sukcesu, status 400 jeżeli email nie jest unikalny bądź identyfikatory kategorii są nieprawidłowe.
+    /// Zwraca w ciele odpowiedzi identyfikator utworzonego kontaktu.
+    /// </returns>
     [HttpPost]
     public async Task<IActionResult> CreateContact(ContactDTO contactDto)
     {
@@ -55,6 +71,13 @@ public class ContactsController : ControllerBase
         return Ok(contactToCreate.Id);
     }
 
+    /// <summary>
+    /// Modyfikuje kontakt o podanym id.
+    /// </summary>
+    /// <param name="contactDto">Dane kontaktu do zapisania w bazie</param>
+    /// <returns>
+    /// Status 200 w przypadku sukcesu, status 400 jeżeli email nie jest unikalny bądź identyfikatory kategorii są nieprawidłowe.
+    /// </returns>
     [HttpPost("{id:int}")]
     public async Task<IActionResult> EditContact(ContactDTO contactDto)
     {
@@ -69,6 +92,13 @@ public class ContactsController : ControllerBase
         return Ok();
     }
 
+    /// <summary>
+    /// Usuwa kontakt wraz z podkategorią, jeżeli była ona powiązana z kategorią "Inne"
+    /// </summary>
+    /// <param name="id">Id kontaktu do usunięcia</param>
+    /// <returns>
+    /// Status 200 w przypadku sukcesu, status 404 jeżeli nie znaleziono kontaktu o podanym identyfikatorze
+    /// </returns>
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteContact(int id)
     {
@@ -90,6 +120,9 @@ public class ContactsController : ControllerBase
         return Ok();
     }
 
+    /// <summary>
+    /// Sprawdza czy dany kontakt spełnia warunki wymagane do dodania go do bazy
+    /// </summary>
     private async Task<bool> IsValidForInsertion(Contact contact)
     {
         if (!string.IsNullOrWhiteSpace(contact.Email))
@@ -102,7 +135,9 @@ public class ContactsController : ControllerBase
         return await ValidateCategoryIntegrity(contact);
     }
 
-
+    /// <summary>
+    /// Sprawdza czy dany kontakt spełnia warunki wymagane do użycia go do zmiany danych w bazie
+    /// </summary>
     private async Task<bool> IsValidForChange(Contact contact)
     {
         if (!string.IsNullOrWhiteSpace(contact.Email))
@@ -115,6 +150,13 @@ public class ContactsController : ControllerBase
         return await ValidateCategoryIntegrity(contact);
     }
 
+    /// <summary>
+    /// Sprawdza czy obiekt spełnia warunki integralności kategorii i podkategorii.
+    /// </summary>
+    /// <remarks>
+    /// Zarówno kategoria i podkategoria musi istnieć, oraz podkategoria musi należeć do kategorii
+    /// </remarks>
+    /// <returns>True jeżeli warunki są spełnione, false w przeciwnym wypadku.</returns>
     private async Task<bool> ValidateCategoryIntegrity(Contact contact)
     {
         var existingCategory = await dbContext.Categories.FirstOrDefaultAsync(c => c.Id == contact.CategoryId);
@@ -125,6 +167,10 @@ public class ContactsController : ControllerBase
 
         return true;
     }
+
+    /// <summary>
+    /// Mapuje obiekt kontaktu warstwy ORM na obiekt użytu do transferu danych pomiędzy serwerem a klientem.
+    /// </summary>
     private static ContactDTO MapContactToDTO(Contact contact) 
     {
         return new ContactDTO
@@ -140,6 +186,9 @@ public class ContactsController : ControllerBase
         };
     }
 
+    /// <summary>
+    /// Mapuje obiekt kontaktu użytu do transferu danych pomiędzy serwerem a klientem na obiekt warstwy ORM.
+    /// </summary>
     private static Contact MapDTOToContact(ContactDTO contact)
     {
         return new Contact

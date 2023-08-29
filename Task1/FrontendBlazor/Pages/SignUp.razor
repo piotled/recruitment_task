@@ -1,8 +1,10 @@
 ﻿@page "/signup"
 @using System.Text;
+@using FrontendBlazor.Authentication;
+@using FrontendBlazor.Model;
 @using FrontendBlazor.Validation;
-@inject Authentication.AuthenticationService authService
-@inject Model.UsersDAO usersRepo
+@inject IAuthenticationService authService
+@inject IUsersDAO usersRepo
 @inject NavigationManager navigation
 
 <PageTitle>Rejestracja</PageTitle>

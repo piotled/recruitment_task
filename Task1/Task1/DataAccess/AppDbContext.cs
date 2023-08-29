@@ -10,6 +10,9 @@ public class AppDbContext : IdentityDbContext
     {
     }
 
+    /// <summary>
+    /// Wypełnia bazę danymi słownikowymi
+    /// </summary>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

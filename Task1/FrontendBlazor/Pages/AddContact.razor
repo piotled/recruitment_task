@@ -2,9 +2,10 @@
 @using System.Text;
 @using FrontendBlazor.Model;
 @using FrontendBlazor.Validation;
-@inject Authentication.AuthenticationService authService
-@inject Model.ContactsDAO contactsDao
-@inject Model.CategoriesDAO categoriesDao
+@using FrontendBlazor.Authentication;
+@inject IAuthenticationService authService
+@inject IContactsDAO contactsDao
+@inject ICategoriesDAO categoriesDao
 @inject NavigationManager navigation
 
 <PageTitle>Tworzenie kontaktu</PageTitle>

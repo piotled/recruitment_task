@@ -32,12 +32,6 @@ public class UsersController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create(UserDTO userRegistrationData)
     {
-        if (string.IsNullOrWhiteSpace(userRegistrationData.Email)
-            || string.IsNullOrWhiteSpace(userRegistrationData.Password))
-        {
-            return BadRequest("Email or password is empty");
-        }
-
         if(await userManager.FindByEmailAsync(userRegistrationData.Email) is not null)
             return BadRequest("Provided email is already in use");
 

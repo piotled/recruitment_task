@@ -1,8 +1,9 @@
 ﻿@page "/"
 @page "/contacts"
 @using FrontendBlazor.Model;
-@inject Authentication.AuthenticationService authService
-@inject Model.ContactsDAO contactsDao
+@using FrontendBlazor.Authentication;
+@inject IAuthenticationService authService
+@inject IContactsDAO contactsDao
 @inject NavigationManager navigation
 
 <PageTitle>Kontakty</PageTitle>

@@ -1,9 +1,9 @@
 ﻿using Microsoft.JSInterop;
 using System.Net.Http.Json;
 
-namespace FrontendBlazor.Authentication;
+namespace FrontendBlazor.Authentication.Impl;
 
-public class AuthenticationService
+public class AuthenticationService : IAuthenticationService
 {
     private readonly HttpClient httpClient;
     private readonly ITokenStorage tokenStorage;
@@ -16,9 +16,9 @@ public class AuthenticationService
 
     public async Task<bool> Authenticate(string email, string password)
     {
-        var response = await httpClient.PostAsync("api/authentication/login", 
+        var response = await httpClient.PostAsync("api/authentication/login",
             JsonContent.Create(new { email, password }));
-        
+
         if (response.IsSuccessStatusCode)
         {
             string currentToken = await response.Content.ReadAsStringAsync();

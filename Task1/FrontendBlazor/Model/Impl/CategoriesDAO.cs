@@ -1,9 +1,9 @@
 ﻿using FrontendBlazor.Authentication;
 using System.Net.Http.Json;
 
-namespace FrontendBlazor.Model;
+namespace FrontendBlazor.Model.Impl;
 
-public class CategoriesDAO
+public class CategoriesDAO : ICategoriesDAO
 {
     private const int categoryOtherId = 1;
 
@@ -12,7 +12,7 @@ public class CategoriesDAO
 
     public CategoriesDAO(IHttpClientFactory httpClientFactory, ITokenStorage tokenStorage)
     {
-        this.httpClient = httpClientFactory.CreateClient("RestApi");
+        httpClient = httpClientFactory.CreateClient("RestApi");
         this.tokenStorage = tokenStorage;
     }
 
@@ -35,7 +35,7 @@ public class CategoriesDAO
                         return new();
                 }
             }
-         
+
             return categories ?? new();
         }
         catch { }
@@ -59,7 +59,7 @@ public class CategoriesDAO
             var result = await httpClient.PostAsJsonAsync("api/categories/other", subcategoryDto);
             return await result.Content.ReadFromJsonAsync<int>();
         }
-        catch 
+        catch
         {
             return 0;
         }

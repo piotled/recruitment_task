@@ -1,16 +1,16 @@
 ﻿using FrontendBlazor.Authentication;
 using System.Net.Http.Json;
 
-namespace FrontendBlazor.Model;
+namespace FrontendBlazor.Model.Impl;
 
-public class ContactsDAO
+public class ContactsDAO : IContactsDAO
 {
     private readonly HttpClient httpClient;
     private readonly ITokenStorage tokenStorage;
 
     public ContactsDAO(IHttpClientFactory httpClientFactory, ITokenStorage tokenStorage)
     {
-        this.httpClient = httpClientFactory.CreateClient("RestApi");
+        httpClient = httpClientFactory.CreateClient("RestApi");
         this.tokenStorage = tokenStorage;
     }
 

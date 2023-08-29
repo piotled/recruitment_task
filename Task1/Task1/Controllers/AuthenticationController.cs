@@ -37,12 +37,6 @@ public class AuthenticationController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> GetAccessToken(UserDTO userLoginData)
     {
-        if (string.IsNullOrWhiteSpace(userLoginData.Email))
-            return BadRequest("Email was not provided");
-
-        if (string.IsNullOrWhiteSpace(userLoginData.Password))
-            return BadRequest("Password was not provided");
-
         IdentityUser? user = await userManager.FindByEmailAsync(userLoginData.Email);
 
         if (user is null)

@@ -1,7 +1,8 @@
 ﻿@page "/login"
 @using System.Text;
 @using FrontendBlazor.Validation;
-@inject Authentication.AuthenticationService authService
+@using FrontendBlazor.Authentication;
+@inject IAuthenticationService authService
 @inject NavigationManager navigation
 
 <PageTitle>Logowanie</PageTitle>
