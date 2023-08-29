@@ -1,8 +1,8 @@
-using FrontendBlazor;
-using FrontendBlazor.Authentication;
-using FrontendBlazor.Authentication.Impl;
-using FrontendBlazor.Model;
-using FrontendBlazor.Model.Impl;
+using RecruitmentTask.Frontend;
+using RecruitmentTask.Frontend.Authentication;
+using RecruitmentTask.Frontend.Authentication.Impl;
+using RecruitmentTask.Frontend.Model;
+using RecruitmentTask.Frontend.Model.Impl;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;

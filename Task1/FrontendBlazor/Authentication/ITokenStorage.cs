@@ -1,4 +1,4 @@
-﻿namespace FrontendBlazor.Authentication;
+﻿namespace RecruitmentTask.Frontend.Authentication;
 
 /// <summary>
 /// Klasa odpowiedzialna za przechowywanie tokenu JWT użytego w procesie uwierzytelniania

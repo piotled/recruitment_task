@@ -1,7 +1,7 @@
 ﻿@page "/login"
 @using System.Text;
-@using FrontendBlazor.Validation;
-@using FrontendBlazor.Authentication;
+@using RecruitmentTask.Frontend.Validation;
+@using RecruitmentTask.Frontend.Authentication;
 @inject IAuthenticationService authService
 @inject NavigationManager navigation
 
@@ -45,6 +45,10 @@
             navigation.NavigateTo("/");
     }
 
+    /// <summary>
+    /// Obsługa kliknięcia w przycisk logowania. Wysyła dane do serwera i informuje o błędzie.
+    /// Wywoływana gdy dane przejdą walidację atrybutów klasy <see cref="LoginData"/>
+    /// </summary>
     private async Task Submit()
     {
         if (await authService.Authenticate(model.Email, model.Password))
@@ -53,6 +57,9 @@
             errorMessage = "Niepoprawne dane logowania";
     }
 
+    /// <summary>
+    /// Model danych logowania
+    /// </summary>
     private class LoginData
     {
         [Required(ErrorMessage = "Email nie może być pusty")]

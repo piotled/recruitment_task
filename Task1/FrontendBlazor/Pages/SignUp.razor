@@ -1,8 +1,8 @@
 ﻿@page "/signup"
 @using System.Text;
-@using FrontendBlazor.Authentication;
-@using FrontendBlazor.Model;
-@using FrontendBlazor.Validation;
+@using RecruitmentTask.Frontend.Authentication;
+@using RecruitmentTask.Frontend.Model;
+@using RecruitmentTask.Frontend.Validation;
 @inject IAuthenticationService authService
 @inject IUsersDAO usersRepo
 @inject NavigationManager navigation
@@ -51,6 +51,11 @@
             navigation.NavigateTo("/");
     }
 
+    /// <summary>
+    /// Obsługa przycisku rejestracji. Wysyła dane do serwera i informuje o błędzie.
+    /// Wywoływana gdy dane przejdą walidację atrybutów klasy <see cref="RegistrationData"/>
+    /// </summary>
+    /// <returns></returns>
     private async Task Submit()
     {
         if (await usersRepo.Create(model.Email, model.Password))
@@ -59,6 +64,9 @@
             errorMessage = "Nie można założyć konta dla podanych danych";
     }
 
+    /// <summary>
+    /// Model danych rejestracji
+    /// </summary>
     private class RegistrationData {
         [Required(ErrorMessage = "Email nie może być pusty")]
         [EmailAddress(ErrorMessage = "Format adresu email jest nieprawidłowy")]

@@ -1,7 +1,7 @@
 ﻿@page "/"
 @page "/contacts"
-@using FrontendBlazor.Model;
-@using FrontendBlazor.Authentication;
+@using RecruitmentTask.Frontend.Model;
+@using RecruitmentTask.Frontend.Authentication;
 @inject IAuthenticationService authService
 @inject IContactsDAO contactsDao
 @inject NavigationManager navigation
@@ -65,10 +65,13 @@ else
 
 @code {
     private string message = string.Empty;
-    private List<Contact> contacts = new();
+    private List<ContactViewModel> contacts = new();
     private bool isAuthenticated = false;
     private bool isLoaded = false;
 
+    /// <summary>
+    /// Inicjalizuje zmienne
+    /// </summary>
     protected override async Task OnInitializedAsync()
     {
         isAuthenticated = await authService.IsAuthenticated();
@@ -76,6 +79,10 @@ else
         isLoaded = true;
     }
 
+    /// <summary>
+    /// Obsługa kliknięcia w przycisk usuwania kontaktu
+    /// </summary>
+    /// <param name="contactId">Id wybranego kontaktu</param>
     private async Task Delete(int contactId)
     {
         if(await contactsDao.Delete(contactId))
@@ -84,6 +91,9 @@ else
         }
     }
 
+    /// <summary>
+    /// Obsługa kliknięcia w przycisk wylogowania
+    /// </summary>
     private async Task Logout()
     {
         if (await authService.Logout())

@@ -1,8 +1,8 @@
 ﻿@page "/add"
 @using System.Text;
-@using FrontendBlazor.Model;
-@using FrontendBlazor.Validation;
-@using FrontendBlazor.Authentication;
+@using RecruitmentTask.Frontend.Model;
+@using RecruitmentTask.Frontend.Validation;
+@using RecruitmentTask.Frontend.Authentication;
 @inject IAuthenticationService authService
 @inject IContactsDAO contactsDao
 @inject ICategoriesDAO categoriesDao
@@ -82,13 +82,17 @@
 @code {
     const int categoryOtherId = 1;
 
-    private Contact model = new();
+    private ContactViewModel model = new();
     private string errorMessage = string.Empty;
     private string otherCategoryName = string.Empty;
-    private List<Category> categories = new();
+    private List<CategoryViewModel> categories = new();
 
     private string CollapseAlertClass => errorMessage == string.Empty ? "collapse" : "";
 
+    /// <summary>
+    /// Sprawdza czy użytkownik jest zalogowany i inicjalizuje zmienne
+    /// oraz informuje o błędach
+    /// </summary>
     protected override async Task OnInitializedAsync()
     {
         if (!await authService.IsAuthenticated())
@@ -101,6 +105,10 @@
         model.CategoryId = categoryOtherId;
     }
 
+    /// <summary>
+    /// Sprawdza poprawność pól których nie można sprawdzić atrybutami,
+    /// wprowadza zmiany i informuje o błędach.
+    /// </summary>
     private async Task Submit()
     {
         if(model.CategoryId == categoryOtherId)

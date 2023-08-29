@@ -1,4 +1,4 @@
-﻿namespace FrontendBlazor.Authentication;
+﻿namespace RecruitmentTask.Frontend.Authentication;
 
 /// <summary>
 /// Służy do logowania/wylogowywania oraz sprawdzania czy użytkownik jest aktualnie zalogowany
@@ -18,7 +18,7 @@ public interface IAuthenticationService
     /// Sprawdza, czy użytkownik jest aktualnie zalogowany.
     /// </summary>
     /// <returns>
-    /// Zwraca true gdy użytkownik jest zalgowanu. False gdy nie jest zalogowany bądź nie można się połączyć z serwerem. 
+    /// Zwraca true gdy użytkownik jest zalgowany. False gdy nie jest zalogowany bądź nie można się połączyć z serwerem. 
     /// </returns>
     public Task<bool> IsAuthenticated();
 

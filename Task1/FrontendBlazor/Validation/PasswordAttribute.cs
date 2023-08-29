@@ -1,7 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace FrontendBlazor.Validation;
+namespace RecruitmentTask.Frontend.Validation;
 
+/// <summary>
+/// Sprawdza czy hasło spełnia wymagania złożoności
+/// </summary>
 sealed class PasswordAttribute : DataTypeAttribute
 {
     public PasswordAttribute()

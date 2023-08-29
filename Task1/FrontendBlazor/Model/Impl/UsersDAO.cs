@@ -1,6 +1,6 @@
 ﻿using System.Net.Http.Json;
 
-namespace FrontendBlazor.Model.Impl;
+namespace RecruitmentTask.Frontend.Model.Impl;
 
 public class UsersDAO : IUsersDAO
 {

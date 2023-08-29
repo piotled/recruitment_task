@@ -1,9 +1,12 @@
-﻿using FrontendBlazor.Validation;
+﻿using RecruitmentTask.Frontend.Validation;
 using System.ComponentModel.DataAnnotations;
 
-namespace FrontendBlazor.Model;
+namespace RecruitmentTask.Frontend.Model;
 
-public class Contact
+/// <summary>
+/// Model kontaktu po stronie klienta
+/// </summary>
+public class ContactViewModel
 {
     public int Id { get; set; }
 

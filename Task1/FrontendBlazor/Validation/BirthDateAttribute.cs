@@ -1,11 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace FrontendBlazor.Validation;
+namespace RecruitmentTask.Frontend.Validation;
 
+/// <summary>
+/// Sprawdza czy data urodzenia jest większa niż 1900/01/01
+/// </summary>
 sealed class BirthDateAttribute : DataTypeAttribute
 {
     public BirthDateAttribute()
-        : base(DataType.Password)
+        : base(DataType.Date)
     {
     }
 

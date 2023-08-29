@@ -1,6 +1,6 @@
 ﻿using Microsoft.JSInterop;
 
-namespace FrontendBlazor.Authentication.Impl;
+namespace RecruitmentTask.Frontend.Authentication.Impl;
 
 public class TokenStorage : ITokenStorage
 {

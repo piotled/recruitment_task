@@ -1,7 +1,7 @@
-﻿using FrontendBlazor.Authentication;
+﻿using RecruitmentTask.Frontend.Authentication;
 using System.Net.Http.Json;
 
-namespace FrontendBlazor.Model.Impl;
+namespace RecruitmentTask.Frontend.Model.Impl;
 
 public class ContactsDAO : IContactsDAO
 {
@@ -14,11 +14,11 @@ public class ContactsDAO : IContactsDAO
         this.tokenStorage = tokenStorage;
     }
 
-    public async Task<List<Contact>> GetAll()
+    public async Task<List<ContactViewModel>> GetAll()
     {
         try
         {
-            return await httpClient.GetFromJsonAsync<List<Contact>>("api/contacts") ?? new();
+            return await httpClient.GetFromJsonAsync<List<ContactViewModel>>("api/contacts") ?? new();
         }
         catch
         {
@@ -27,14 +27,14 @@ public class ContactsDAO : IContactsDAO
         }
     }
 
-    public async Task<Contact?> Get(int id)
+    public async Task<ContactViewModel?> Get(int id)
     {
         try
         {
             string currentToken = await tokenStorage.GetToken();
             httpClient.DefaultRequestHeaders.Authorization =
                 new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", currentToken);
-            return await httpClient.GetFromJsonAsync<Contact>($"api/contacts/{id}");
+            return await httpClient.GetFromJsonAsync<ContactViewModel>($"api/contacts/{id}");
         }
         catch
         {
@@ -43,7 +43,7 @@ public class ContactsDAO : IContactsDAO
         }
     }
 
-    public async Task<bool> Create(Contact contact)
+    public async Task<bool> Create(ContactViewModel contact)
     {
         string currentToken = await tokenStorage.GetToken();
         httpClient.DefaultRequestHeaders.Authorization =
@@ -60,7 +60,7 @@ public class ContactsDAO : IContactsDAO
         }
     }
 
-    public async Task<bool> Update(Contact contact)
+    public async Task<bool> Update(ContactViewModel contact)
     {
         string currentToken = await tokenStorage.GetToken();
         httpClient.DefaultRequestHeaders.Authorization =

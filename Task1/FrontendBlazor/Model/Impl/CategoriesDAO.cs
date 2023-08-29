@@ -1,7 +1,7 @@
-﻿using FrontendBlazor.Authentication;
+﻿using RecruitmentTask.Frontend.Authentication;
 using System.Net.Http.Json;
 
-namespace FrontendBlazor.Model.Impl;
+namespace RecruitmentTask.Frontend.Model.Impl;
 
 public class CategoriesDAO : ICategoriesDAO
 {
@@ -16,11 +16,11 @@ public class CategoriesDAO : ICategoriesDAO
         this.tokenStorage = tokenStorage;
     }
 
-    public async Task<List<Category>> GetAll()
+    public async Task<List<CategoryViewModel>> GetAll()
     {
         try
         {
-            var categories = await httpClient.GetFromJsonAsync<List<Category>>("api/categories");
+            var categories = await httpClient.GetFromJsonAsync<List<CategoryViewModel>>("api/categories");
 
             if (categories is not null && categories.Count > 0)
             {
@@ -28,7 +28,7 @@ public class CategoriesDAO : ICategoriesDAO
                 {
 
                     var address = $"api/categories/{category.Id}/subcategories";
-                    category.Subcategories = await httpClient.GetFromJsonAsync<List<Subcategory>>(address)
+                    category.Subcategories = await httpClient.GetFromJsonAsync<List<SubcategoryViewModel>>(address)
                         ?? new();
 
                     if (category.Id != categoryOtherId && category.Subcategories.Count == 0)
@@ -47,7 +47,7 @@ public class CategoriesDAO : ICategoriesDAO
 
     public async Task<int> AddOtherCategory(string categoryName)
     {
-        var subcategoryDto = new Subcategory()
+        var subcategoryDto = new SubcategoryViewModel()
         {
             Name = categoryName,
             CategoryId = categoryOtherId

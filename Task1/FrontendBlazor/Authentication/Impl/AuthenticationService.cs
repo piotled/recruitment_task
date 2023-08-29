@@ -2,7 +2,7 @@
 using System.Net.Http.Json;
 using System.Text;
 
-namespace FrontendBlazor.Authentication.Impl;
+namespace RecruitmentTask.Frontend.Authentication.Impl;
 
 public class AuthenticationService : IAuthenticationService
 {
